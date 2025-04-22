@@ -266,6 +266,19 @@ public class state_refresh extends Thread {
                         String loser = response.get("loser").getAsString();
                         int score_change = response.get("game_rate").getAsInt();
 
+
+                        JsonObject sent1 = new JsonObject();
+                        sent1.addProperty("type", "rec_gameover");
+                        sent1.addProperty("username", username);
+                        fw.println(sent1);
+
+                        JsonObject res = null;
+                        try {
+                            res = JsonParser.parseString(in.readLine()).getAsJsonObject();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
                         if(!gamovered){
                             gamovered = true;
                             if(winner.split(" ").length == 2){
@@ -278,17 +291,7 @@ public class state_refresh extends Thread {
                                 (new ScoreChangeDialog(winner, 2 * score_change, loser1, -1 * score_change, loser2, -1 * score_change)).setVisible(true);
                             }
                         }
-                        JsonObject sent1 = new JsonObject();
-                        sent1.addProperty("type", "rec_gameover");
-                        sent1.addProperty("username", username);
-                        fw.println(sent1);
 
-                        JsonObject res = null;
-                        try {
-                            res = JsonParser.parseString(in.readLine()).getAsJsonObject();
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
                         close_gaming_component();
                         timer.stop();
                         poker_desk.new_game();
@@ -341,6 +344,7 @@ public class state_refresh extends Thread {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (index[0] <= poker_desk.my_pokes.size()) {
+                    poker_desk.sortPokes();
                     poker_desk.clear_out_container(poker_desk.my_pokes_container);
                     poker_desk.show_my_hand_card(new ArrayList<>(poker_desk.my_pokes.subList(0, index[0])));
                     poker_desk.frame.repaint();

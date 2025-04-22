@@ -220,6 +220,10 @@ public class FTL_game {
 
     HashMap<String,Integer> user_val = new HashMap<>(); // 谁叫了多少分
     public JsonObject loot_landlord(String user,int val){
+
+        now_turn++;
+        now_turn %= 3;
+
         game_rate = Math.max(game_rate,val);
 
         JsonObject rt = new JsonObject();
@@ -231,6 +235,8 @@ public class FTL_game {
             return rt;
         }
         else user_val.put(user,val);
+
+
 
         // 最大的当地主
         String mx_user = null; int mx_val = 0;
@@ -244,9 +250,6 @@ public class FTL_game {
             set_landlord(mx_user);
             rt.addProperty("have_landlord",mx_user);
         }
-
-        now_turn++;
-        now_turn %= 3;
 
         return rt;
     } // 叫分 抢地主
